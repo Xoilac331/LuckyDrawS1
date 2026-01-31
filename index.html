@@ -8,6 +8,7 @@
         :root {
             --primary-color: #e74c3c;
             --bg-color: #f4f4f4;
+            --tease-color: #f39c12;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,6 +39,13 @@
             border-radius: 15px;
         }
         p { color: #666; line-height: 1.5; }
+        .tease-message {
+            margin-top: 15px;
+            color: var(--tease-color);
+            font-weight: bold;
+            font-style: italic;
+            display: none; /* Mặc định là ẩn */
+        }
         .footer { margin-top: 20px; font-size: 0.8rem; color: #aaa; }
     </style>
 </head>
@@ -49,6 +57,10 @@
         
         <div id="lucky-number" class="number-display">...</div>
         
+        <div id="tease-area" class="tease-message">
+            Chỉ được quét 1 lần thôi nghen :3
+        </div>
+        
         <p><i>Hãy chụp màn hình lại hoặc giữ trang này để đối chiếu khi quay thưởng nhé!</i></p>
         
         <div class="footer">
@@ -57,23 +69,34 @@
     </div>
 
     <script>
-        // Hàm kiểm tra và cấp số
-        function getLuckyNumber() {
-            const storageKey = 'my_event_lucky_number';
-            let luckyNumber = localStorage.getItem(storageKey);
-
+        function handleLuckySystem() {
+            const numKey = 'my_event_lucky_number';
+            const countKey = 'visit_count';
+            
+            // 1. Xử lý số may mắn
+            let luckyNumber = localStorage.getItem(numKey);
             if (!luckyNumber) {
-                // Nếu chưa có số, tạo số ngẫu nhiên từ 1000 đến 9999
-                // Bạn có thể thay đổi phạm vi số ở đây
                 luckyNumber = Math.floor(1000 + Math.random() * 9000);
-                localStorage.setItem(storageKey, luckyNumber);
+                localStorage.setItem(numKey, luckyNumber);
             }
-
             document.getElementById('lucky-number').innerText = luckyNumber;
+
+            // 2. Xử lý đếm số lần truy cập
+            let visits = localStorage.getItem(countKey);
+            if (!visits) {
+                visits = 1;
+            } else {
+                visits = parseInt(visits) + 1;
+            }
+            localStorage.setItem(countKey, visits);
+
+            // 3. Kiểm tra nếu truy cập từ lần 2 trở lên thì hiện dòng trêu chọc
+            if (visits >= 2) {
+                document.getElementById('tease-area').style.display = 'block';
+            }
         }
 
-        // Chạy hàm khi trang web tải xong
-        window.onload = getLuckyNumber;
+        window.onload = handleLuckySystem;
     </script>
 </body>
 </html>
