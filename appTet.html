@@ -1,33 +1,79 @@
-!DOCTYPE html
-html lang=vi
-head
-    meta charset=UTF-8
-    titleSố May Mắn Của Bạntitle
-    style
-        body { text-align center; font-family sans-serif; padding-top 50px; background #f4f4f4; }
-        .card { background white; padding 30px; border-radius 15px; display inline-block; shadow 0 4px 8px rgba(0,0,0,0.1); }
-        #number { font-size 80px; color #e74c3c; font-weight bold; margin 20px 0; }
-    style
-head
-body
-    div class=card
-        h2Số may mắn của bạn làh2
-        div id=number...div
-        pHãy chụp màn hình lại để đối chiếu khi quay thưởng nhé!p
-    div
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Số May Mắn Của Bạn</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --bg-color: #f4f4f4;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 400px;
+        }
+        h1 { color: #333; font-size: 1.5rem; }
+        .number-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+            padding: 10px;
+            border: 4px dashed var(--primary-color);
+            border-radius: 15px;
+        }
+        p { color: #666; line-height: 1.5; }
+        .footer { margin-top: 20px; font-size: 0.8rem; color: #aaa; }
+    </style>
+</head>
+<body>
 
-    script
-         Kiểm tra xem đã có số chưa
-        let luckyNumber = localStorage.getItem('my_lucky_number');
+    <div class="card">
+        <h1>CHÚC MỪNG BẠN!</h1>
+        <p>Số may mắn để quay thưởng của bạn là:</p>
+        
+        <div id="lucky-number" class="number-display">...</div>
+        
+        <p><i>Hãy chụp màn hình lại hoặc giữ trang này để đối chiếu khi quay thưởng nhé!</i></p>
+        
+        <div class="footer">
+            Số này được cấp cố định cho thiết bị của bạn.
+        </div>
+    </div>
 
-        if (!luckyNumber) {
-             Nếu chưa có, tạo số ngẫu nhiên từ 1000 đến 9999
-            luckyNumber = Math.floor(1000 + Math.random()  9000);
-            localStorage.setItem('my_lucky_number', luckyNumber);
+    <script>
+        // Hàm kiểm tra và cấp số
+        function getLuckyNumber() {
+            const storageKey = 'my_event_lucky_number';
+            let luckyNumber = localStorage.getItem(storageKey);
+
+            if (!luckyNumber) {
+                // Nếu chưa có số, tạo số ngẫu nhiên từ 1000 đến 9999
+                // Bạn có thể thay đổi phạm vi số ở đây
+                luckyNumber = Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem(storageKey, luckyNumber);
+            }
+
+            document.getElementById('lucky-number').innerText = luckyNumber;
         }
 
-         Hiển thị số ra màn hình
-        document.getElementById('number').innerText = luckyNumber;
-    script
-body
-html
+        // Chạy hàm khi trang web tải xong
+        window.onload = getLuckyNumber;
+    </script>
+</body>
+</html>
