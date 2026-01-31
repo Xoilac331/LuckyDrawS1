@@ -1,0 +1,33 @@
+!DOCTYPE html
+html lang=vi
+head
+    meta charset=UTF-8
+    titleSố May Mắn Của Bạntitle
+    style
+        body { text-align center; font-family sans-serif; padding-top 50px; background #f4f4f4; }
+        .card { background white; padding 30px; border-radius 15px; display inline-block; shadow 0 4px 8px rgba(0,0,0,0.1); }
+        #number { font-size 80px; color #e74c3c; font-weight bold; margin 20px 0; }
+    style
+head
+body
+    div class=card
+        h2Số may mắn của bạn làh2
+        div id=number...div
+        pHãy chụp màn hình lại để đối chiếu khi quay thưởng nhé!p
+    div
+
+    script
+         Kiểm tra xem đã có số chưa
+        let luckyNumber = localStorage.getItem('my_lucky_number');
+
+        if (!luckyNumber) {
+             Nếu chưa có, tạo số ngẫu nhiên từ 1000 đến 9999
+            luckyNumber = Math.floor(1000 + Math.random()  9000);
+            localStorage.setItem('my_lucky_number', luckyNumber);
+        }
+
+         Hiển thị số ra màn hình
+        document.getElementById('number').innerText = luckyNumber;
+    script
+body
+html
