@@ -3,132 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Số May Mắn Của Bạn</title>
+    <title>Sự Kiện Quay Thưởng</title>
     <style>
-        :root {
-            --primary-color: #e74c3c;
-            --bg-color: #f4f4f4;
-            --tease-color: #f39c12;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 80%;
-            max-width: 400px;
-        }
-        h1 { color: #333; font-size: 1.5rem; }
-        .number-display {
-            font-size: 4rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 20px 0;
-            padding: 10px;
-            border: 4px dashed var(--primary-color);
-            border-radius: 15px;
-        }
-        p { color: #666; line-height: 1.5; }
-        .tease-message {
-            margin-top: 15px;
-            color: var(--tease-color);
-            font-weight: bold;
-            font-style: italic;
-            display: none; /* Mặc định là ẩn */
-        }
-        .footer { margin-top: 20px; font-size: 0.8rem; color: #aaa; }
+        :root { --primary-color: #e74c3c; --bg-color: #f4f4f4; }
+        body { font-family: sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 85%; max-width: 400px; }
+        .number-display { font-size: 3.5rem; font-weight: bold; color: var(--primary-color); margin: 20px 0; padding: 10px; border: 4px dashed var(--primary-color); border-radius: 15px; }
+        input[type="text"] { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        button { background: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: bold; }
+        .tease-message { color: #f39c12; font-weight: bold; margin-top: 15px; display: none; }
+        #result-area { display: none; } /* Ẩn vùng kết quả lúc đầu */
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h1>CHÚC MỪNG BẠN!</h1>
-        <p>Số may mắn để quay thưởng của bạn là:</p>
-        
-        <div id="lucky-number" class="number-display">...</div>
-        
-        <div id="tease-area" class="tease-message">
-            Trai xinh gái đẹp chỉ được quét 1 lần thôi nghen :3
+        <div id="input-area">
+            <h1>CHÀO MỪNG!</h1>
+            <p>Nhập biệt danh của bạn để nhận số:</p>
+            <input type="text" id="nickname" placeholder="Ví dụ: Anh Ba Khía (không bắt buộc)">
+            <br>
+            <button onclick="generateAndSend()">Nhận Số May Mắn</button>
         </div>
-        
-        <p><i>Hãy chụp màn hình lại hoặc giữ trang này để đối chiếu khi quay thưởng nhé!</i></p>
-        
-        <div class="footer">
-            Số này được cấp cố định cho thiết bị của bạn.
+
+        <div id="result-area">
+            <h1>CHÚC MỪNG!</h1>
+            <p id="greeting"></p>
+            <div id="lucky-number" class="number-display">...</div>
+            <div id="tease-area" class="tease-message">Chỉ được quét 1 lần thôi nghen :3</div>
+            <p><i>Hãy chụp màn hình lại nhé!</i></p>
         </div>
     </div>
 
     <script>
-        function handleLuckySystem() {
-            const numKey = 'my_event_lucky_number';
-            const countKey = 'visit_count';
-            
-            // 1. Xử lý số may mắn
-            let luckyNumber = localStorage.getItem(numKey);
-            if (!luckyNumber) {
-                luckyNumber = Math.floor(1000 + Math.random() * 9000);
-                localStorage.setItem(numKey, luckyNumber);
-            }
-            document.getElementById('lucky-number').innerText = luckyNumber;
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzt0WNPk0rH_j6-Yf2uIM-TQpjJCYV3o-Mwg9X1NMoWRmYLOkAvQA2bSRVPpPqG3EQ/exec';
+        const numKey = 'event_num';
+        const nameKey = 'event_name';
+        const countKey = 'event_visit';
 
-            // 2. Xử lý đếm số lần truy cập
+        function showResult(number, name, isRevisit) {
+            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('result-area').style.display = 'block';
+            document.getElementById('lucky-number').innerText = number;
+            document.getElementById('greeting').innerText = "Chào " + name + ", số của bạn là:";
+            if (isRevisit) {
+                document.getElementById('tease-area').style.display = 'block';
+            }
+        }
+
+        async function generateAndSend() {
+            let name = document.getElementById('nickname').value.trim() || "Ẩn danh";
+            let number = Math.floor(1000 + Math.random() * 9000);
+
+            // Lưu vào máy người dùng
+            localStorage.setItem(numKey, number);
+            localStorage.setItem(nameKey, name);
+            localStorage.setItem(countKey, 1);
+
+            // Hiển thị ngay
+            showResult(number, name, false);
+
+            // Gửi ngầm lên Google Sheets
+            try {
+                fetch(`${scriptURL}?number=${number}&name=${encodeURIComponent(name)}`, { mode: 'no-cors' });
+            } catch (e) { console.error(e); }
+        }
+
+        window.onload = function() {
+            let savedNumber = localStorage.getItem(numKey);
+            let savedName = localStorage.getItem(nameKey);
             let visits = localStorage.getItem(countKey);
-            if (!visits) {
-                visits = 1;
-            } else {
-                visits = parseInt(visits) + 1;
-            }
-            localStorage.setItem(countKey, visits);
 
-            // 3. Kiểm tra nếu truy cập từ lần 2 trở lên thì hiện dòng trêu chọc
-            if (visits >= 2) {
-                document.getElementById('tease-area').style.display = 'block';
+            if (savedNumber) {
+                // Nếu đã có số, tăng lần truy cập và hiện kết quả luôn
+                visits = parseInt(visits) + 1;
+                localStorage.setItem(countKey, visits);
+                showResult(savedNumber, savedName, visits >= 2);
             }
-        }
-        async function handleLuckySystem() {
-            const numKey = 'my_event_lucky_number';
-            const countKey = 'visit_count';
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbzt0WNPk0rH_j6-Yf2uIM-TQpjJCYV3o-Mwg9X1NMoWRmYLOkAvQA2bSRVPpPqG3EQ/exec'; // Thay link ở bước 1 vào
-        
-            let luckyNumber = localStorage.getItem(numKey);
-            
-            // TRƯỜNG HỢP 1: NGƯỜI MỚI QUÉT LẦN ĐẦU
-            if (!luckyNumber) {
-                luckyNumber = Math.floor(1000 + Math.random() * 9000);
-                localStorage.setItem(numKey, luckyNumber);
-                
-                // Gửi số này về Google Sheet một cách bí mật
-                try {
-                    fetch(`${scriptURL}?number=${luckyNumber}`, { mode: 'no-cors' });
-                } catch (e) {
-                    console.log("Lỗi gửi dữ liệu");
-                }
-            }
-            
-            document.getElementById('lucky-number').innerText = luckyNumber;
-        
-            // TRƯỜNG HỢP 2: XỬ LÝ TRÊU CHỌC (giữ nguyên code cũ của bạn)
-            let visits = localStorage.getItem(countKey) || 0;
-            visits = parseInt(visits) + 1;
-            localStorage.setItem(countKey, visits);
-        
-            if (visits >= 2) {
-                document.getElementById('tease-area').style.display = 'block';
-            }
-        }
-        window.onload = handleLuckySystem;
+        };
     </script>
 </body>
 </html>
-
-
