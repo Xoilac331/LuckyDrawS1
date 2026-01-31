@@ -95,7 +95,37 @@
                 document.getElementById('tease-area').style.display = 'block';
             }
         }
-
+        async function handleLuckySystem() {
+            const numKey = 'my_event_lucky_number';
+            const countKey = 'visit_count';
+            const scriptURL = 'DÁN_LINK_WEB_APP_GOOGLE_CỦA_BẠN_VÀO_ĐÂY'; // Thay link ở bước 1 vào
+        
+            let luckyNumber = localStorage.getItem(numKey);
+            
+            // TRƯỜNG HỢP 1: NGƯỜI MỚI QUÉT LẦN ĐẦU
+            if (!luckyNumber) {
+                luckyNumber = Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem(numKey, luckyNumber);
+                
+                // Gửi số này về Google Sheet một cách bí mật
+                try {
+                    fetch(`${scriptURL}?number=${luckyNumber}`, { mode: 'no-cors' });
+                } catch (e) {
+                    console.log("Lỗi gửi dữ liệu");
+                }
+            }
+            
+            document.getElementById('lucky-number').innerText = luckyNumber;
+        
+            // TRƯỜNG HỢP 2: XỬ LÝ TRÊU CHỌC (giữ nguyên code cũ của bạn)
+            let visits = localStorage.getItem(countKey) || 0;
+            visits = parseInt(visits) + 1;
+            localStorage.setItem(countKey, visits);
+        
+            if (visits >= 2) {
+                document.getElementById('tease-area').style.display = 'block';
+            }
+        }
         window.onload = handleLuckySystem;
     </script>
 </body>
